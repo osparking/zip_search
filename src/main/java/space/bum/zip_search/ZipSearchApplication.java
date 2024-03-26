@@ -1,4 +1,4 @@
-package space.bum.spring_boot;
+package space.bum.zip_search;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
