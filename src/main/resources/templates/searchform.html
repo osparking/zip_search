@@ -21,10 +21,9 @@
 				[동/읍/면/리] 입력
 			</p>
 		</div>
-		<form class="form-horizontal" th:object="${searchKey}"
+		<form class="form-horizontal mb-4" th:object="${searchKey}"
 			th:action="@{/searchAddress}" method="post">
-
-			<div class="row mb-5 form-group">
+			<div class="row form-group">
 				<div class="col-8">
 					<input type="text" class="form-control" placeholder="주소 검색어"
 						th:field="*{addrKey}" />
@@ -37,6 +36,34 @@
 				</div>
 			</div>
 		</form>
+		<table class="table table-striped w-auto caption-top">
+			<caption class="ps-2">
+				(검색건수:
+				<span
+					th:text="${addresses eq null} ? '- )' : ${addresses.size} + ')'">
+					(검색건수)</span>
+			</caption>
+			<thead>
+				<tr>
+					<th>우편번호</th>
+					<th>주소(도로명/지번)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="address: ${addresses}">
+					<td th:text="${address.zipcode}">(우편번호)</td>
+					<td th:text="${address.address}">(도로명/지번-주소)</td>
+				</tr>
+				<tr th:remove="all">
+					<td>(우편번호)</td>
+					<td>(도로명/지번-주소)</td>
+				</tr>
+				<tr th:remove="all">
+					<td>(우편번호)</td>
+					<td>(도로명/지번-주소)</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </body>
 </html>
