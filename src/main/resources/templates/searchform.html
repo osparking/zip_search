@@ -21,8 +21,22 @@
 				[동/읍/면/리] 입력
 			</p>
 		</div>
+		<form class="form-horizontal" th:object="${searchKey}"
+			th:action="@{/searchAddress}" method="get">
 
+			<div class="row mb-5 form-group">
+				<div class="col-8">
+					<input type="text" class="form-control" placeholder="주소 검색어"
+						th:field="*{addrKey}" />
+					<div class="alert alert-warning text-nowrap"
+						th:if="${#fields.hasErrors('addrKey')}" th:errors="*{addrKey}">
+					</div>
+				</div>
+				<div class="col-3">
+					<button type="submit" class="btn btn-primary">검색</button>
+				</div>
+			</div>
+		</form>
 	</div>
-
 </body>
 </html>
