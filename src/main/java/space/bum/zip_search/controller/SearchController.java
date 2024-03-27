@@ -1,6 +1,7 @@
 package space.bum.zip_search.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,20 +20,19 @@ public class SearchController {
     model.addAttribute("searchKey", new SearchKey());
     return "searchform";
   }
-  
+
   @PostMapping("/searchAddress")
   public String addressSearchForm(@Valid SearchKey searchKey,
       BindingResult result, Model model) {
     System.out.println("주소 검색어: " + searchKey.getAddrKey());
-    var addresses = new ArrayList<FoundAddress>();    
-    
+    var addresses = new ArrayList<FoundAddress>();
     createDummyAddresses(addresses);
     model.addAttribute("addresses", addresses);
-    System.out.println("검색 건수: " + addresses.size());    
+    System.out.println("검색 건수: " + addresses.size());
     return "searchform";
   }
-  
-  private void createDummyAddresses(ArrayList<FoundAddress> addresses) {
+
+  private void createDummyAddresses(List<FoundAddress> addresses) {
     addresses.add(new FoundAddress("12345", "서울시 종로구 관철동 134번지"));
     addresses.add(new FoundAddress("23233", "경기도 하남시 망월동 1050번지"));
   }
