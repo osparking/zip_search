@@ -33,7 +33,11 @@ public class SearchController {
   }
 
   private void createDummyAddresses(List<FoundAddress> addresses) {
-    addresses.add(new FoundAddress("12345", "서울시 종로구 관철동 134번지"));
-    addresses.add(new FoundAddress("23233", "경기도 하남시 망월동 1050번지"));
+    for (int i = 0; i < 500; i++) {
+      addresses.add(new FoundAddress(Integer.toString(12300 + i),
+          "서울시 종로구 관철동 134번지"));
+      addresses.add(new FoundAddress(Integer.toString(57000 + i),
+          "경기도 하남시 망월동 1050번지"));
+    }
   }
 }
