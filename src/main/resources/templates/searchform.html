@@ -40,7 +40,7 @@
 			<caption class="ps-2">
 				(검색건수:
 				<span
-					th:text="${addresses eq null} ? '- )' : ${addresses.size} + ')'">
+					th:text="${addressPage eq null} ? '- )' : ${addressPage.totalElements} + ')'">
 					(검색건수)</span>
 			</caption>
 			<thead>
@@ -49,8 +49,9 @@
 					<th>주소(도로명/지번)</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr th:each="address: ${addresses}">
+			<tbody th:if="${addressPage != null}">
+				<tr th:each="address,iStat: ${addressPage.content}"
+					th:if="${addressPage != null}">
 					<td th:text="${address.zipcode}">(우편번호)</td>
 					<td th:text="${address.address}">(도로명/지번-주소)</td>
 				</tr>
@@ -64,6 +65,43 @@
 				</tr>
 			</tbody>
 		</table>
+		<ul th:if="${addressPage != null && addressPage.totalPages > 0}" class="pagination">
+			<li class="page-item"
+				th:classappend="${currentPage == 1} ? 'disabled'"><a
+					th:replace="fragments/paging :: paging(
+                       ${addressPage.size}, 1, '<<', '첫 페이지')"></a>
+			</li>
+			<li class="page-item font-weight-bold"
+				th:classappend="${currentPage == 1} ? 'disabled'"><a
+					th:replace="~{fragments/paging :: paging(${addressPage.size}, 
+                       ${currentPage - 1}, '직전', '직전 페이지')}"></a>
+			</li>
+			<li class="page-item disabled" th:if="${currentPage - 2 > 1}"><a
+					class="page-link" href="#">...</a></li>
+			<li class="page-item"
+				th:classappend="${pageNumber == currentPage} ? 'active'"
+				th:each="pageNumber : ${#numbers.sequence(
+          currentPage > 2 ? currentPage - 2 : 1, 
+          (currentPage > 2 ? currentPage - 2 : 1) + 4 > totalPages ?
+          totalPages : (currentPage > 2 ? currentPage - 2 : 1) + 4)}">
+				<a
+					th:replace="~{fragments/paging :: paging(${addressPage.size}, 
+           ${pageNumber}, ${pageNumber}, ${pageNumber} + '페이지')}"></a>
+			</li>
+			<li class="page-item disabled"
+				th:if="${currentPage + 2 < totalPages}"><a class="page-link"
+					href="#">...</a></li>
+			<li class="page-item font-weight-bold"
+				th:classappend="${currentPage == totalPages} ? 'disabled'"><a
+					th:replace="~{fragments/paging :: paging(${addressPage.size}, 
+                       ${currentPage + 1}, '다음', '다음 페이지')}"></a>
+			</li>
+			<li class="page-item"
+				th:classappend="${currentPage == totalPages} ? 'disabled'"><a
+					th:replace="fragments/paging :: paging(
+                       ${addressPage.size}, ${totalPages}, '>>', '끝 페이지')"></a>
+			</li>
+		</ul>
 	</div>
 </body>
 </html>
