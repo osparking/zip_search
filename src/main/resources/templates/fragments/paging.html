@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>페이지 링크 단편</title>
+<link href="../../static/css/bootstrap-5.3.3-dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	th:href="@{/css/bootstrap-5.3.3-dist/css/bootstrap.min.css}">
+<script src="../../static/js/jquery-3.7.1.min.js"
+	th:src="@{/js/jquery-3.7.1.min.js}"></script>
+</head>
+<body>
+	<a th:fragment="paging(size, page, label, tooltip)" th:text=${label}
+		th:class="page-link"
+		th:href="@{searchAddress(size=${size}, page=${page})}"
+		th:title="${tooltip}" rel="tooltip"> [[${label}]] </a>
+</body>
+</html>
