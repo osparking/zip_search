@@ -10,9 +10,9 @@
 	th:src="@{/js/jquery-3.7.1.min.js}"></script>
 </head>
 <body>
-	<a th:fragment="paging(size, page, label, tooltip)" th:text=${label}
+	<a th:fragment="paging(addrKey, size, page, label, tooltip)" th:text=${label}
 		th:class="page-link"
-		th:href="@{searchAddress(size=${size}, page=${page})}"
+		th:href="@{searchAddress(addrKey=${addrKey}, size=${size}, page=${page})}"
 		th:title="${tooltip}" rel="tooltip"> [[${label}]] </a>
 </body>
 </html>
