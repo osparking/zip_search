@@ -29,17 +29,22 @@ public class OpenApiController {
   public static String find(String s, int p, int l,
       List<FoundAddress> pageAddresses, int[] n) {
     HttpURLConnection con = null;
-    String auth_key = System.getenv("ZIP_SEARCH_APIKEY");
+    var urlBuilder = new StringBuilder("http://openapi.epost.go.kr/");
+
+    urlBuilder.append("postal/retrieveNewAdressAreaCdSearchAllService/");
+    urlBuilder.append("retrieveNewAdressAreaCdSearchAllService/");
+    urlBuilder.append("getNewAddressListAreaCdSearchAll");
+    urlBuilder.append("?ServiceKey=");
+    urlBuilder.append(System.getenv("ZIP_SEARCH_APIKEY")); // API 인증키
+    urlBuilder.append("&countPerPage=");
+    urlBuilder.append(l); // 페이지당 출력될 개수를 지정(최대 50)
+    urlBuilder.append("&currentPage=");
+    urlBuilder.append(p); // 출력될 페이지 번호
+    urlBuilder.append("&srchwrd=");
 
     try {
-      URL url = new URL(
-          "http://openapi.epost.go.kr/postal/retrieveNewAdressAreaCdSearchAllService/retrieveNewAdressAreaCdSearchAllService/getNewAddressListAreaCdSearchAll"
-              + "?ServiceKey="
-              + auth_key // 서비스키
-              + "&countPerPage=" + l // 페이지당 출력될 개수를 지정(최대 50)
-              + "&currentPage=" + p // 출력될 페이지 번호
-              + "&srchwrd=" + URLEncoder.encode(s, "UTF-8") // 검색어
-      );
+      urlBuilder.append(URLEncoder.encode(s, "UTF-8")); // 주소 검색어
+      URL url = new URL(urlBuilder.toString());
 
       con = (HttpURLConnection) url.openConnection();
       con.setRequestProperty("Accept-language", "ko");
@@ -54,7 +59,7 @@ public class OpenApiController {
       String nn;
       Node nd;
       NodeList ns = doc.getElementsByTagName("cmmMsgHeader");
-      if (ns.getLength() > 0)
+      if (ns.getLength() > 0) {
         for (nd = ns.item(0).getFirstChild(); nd != null; nd = nd
             .getNextSibling()) {
           nn = nd.getNodeName();
@@ -78,6 +83,7 @@ public class OpenApiController {
             }
           }
         }
+      }
 
       if (bOk) {
         ns = doc.getElementsByTagName("newAddressListAreaCdSearchAll");
