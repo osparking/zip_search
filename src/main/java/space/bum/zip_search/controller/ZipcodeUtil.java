@@ -14,20 +14,20 @@ import org.w3c.dom.NodeList;
 
 import space.bum.zip_search.domain.FoundAddress;
 
-public class OpenApiController {
-  // * 공공데이타포털(http://www.data.go.kr) 오픈 API 이용
-
-  // 서비스명 : 통합검색 5자리 우편번호 조회서비스
-  // 새 우편번호(2015-08-01부터) 오픈 API 주소
-  // http://openapi.epost.go.kr/postal/retrieveNewAdressAreaCdSearchAllService/retrieveNewAdressAreaCdSearchAllService/getNewAddressListAreaCdSearchAll
-
-  // [in] s : 검색어 (도로명주소[도로명/건물명] 또는 지번주소[동/읍/면/리])
-  // [in] p : 읽어올 페이지(1부터), l : 한 페이지당 출력할 목록 수(최대 50까지)
-  // [out] v[i*3 +0]=우편번호, v[i*3 +1]=도로명주소, v[i*3 +2]=지번주소, v.Count/3=표시할 목록 수
-  // [out] n[0]=검색한 전체 목록(우편번호) 개수, n[1]=읽어온 페이지(1부터)
-  // 반환값 : 에러메시지, null == OK
-  public static String find(String s, int p, int l,
-      List<FoundAddress> pageAddresses, int[] n) {
+public class ZipcodeUtil {
+  /** 
+   * 공공데이타포털(http://www.data.go.kr) 오픈 API 이용 서비스명 : 통합검색 5자리 우편번호 
+   * 조회서비스 새 우편번호(2015-08-01부터) 오픈 API 주소
+   * 
+   * @param addrSearchKey : 주소 검색어 (도로명주소[도로명/건물명] 또는 지번주소[동/읍/면/리])
+   * @param pageIndex : 읽을 페이지 번호(1: 첫 페이지)
+   * @param pageSize : 페이지 크기(최대 50)
+   * @param pageAddresses : 읽은 주소(우편번호, 도로주소, 지번주소) 한 페이지
+   * @param result : 검색 결과[전체 주소항 개수, 읽은 페이지 번호]
+   * @return 오류 메시지, 성공한 경우 null
+   */
+  public static String find(String addrSearchKey, int pageIndex, int pageSize,
+      List<FoundAddress> pageAddresses, int[] result) {
     HttpURLConnection con = null;
     var urlBuilder = new StringBuilder("http://openapi.epost.go.kr/");
 
@@ -37,13 +37,13 @@ public class OpenApiController {
     urlBuilder.append("?ServiceKey=");
     urlBuilder.append(System.getenv("ZIP_SEARCH_APIKEY")); // API 인증키
     urlBuilder.append("&countPerPage=");
-    urlBuilder.append(l); // 페이지당 출력될 개수를 지정(최대 50)
+    urlBuilder.append(pageSize); // 페이지당 출력될 개수를 지정(최대 50)
     urlBuilder.append("&currentPage=");
-    urlBuilder.append(p); // 출력될 페이지 번호
+    urlBuilder.append(pageIndex); // 출력될 페이지 번호
     urlBuilder.append("&srchwrd=");
 
     try {
-      urlBuilder.append(URLEncoder.encode(s, "UTF-8")); // 주소 검색어
+      urlBuilder.append(URLEncoder.encode(addrSearchKey, "UTF-8")); // 주소 검색어
       URL url = new URL(urlBuilder.toString());
 
       con = (HttpURLConnection) url.openConnection();
@@ -54,7 +54,7 @@ public class OpenApiController {
       Document doc = bd.parse(con.getInputStream());
 
       boolean bOk = false; // <successYN>Y</successYN> 획득 여부
-      s = null; // 에러 메시지
+      addrSearchKey = null; // 에러 메시지
 
       String nn;
       Node nd;
@@ -71,15 +71,15 @@ public class OpenApiController {
                 bOk = true; // 검색 성공
             } else if (nn.equals("errMsg")) // 에러 메시지
             {
-              s = nd.getTextContent();
+              addrSearchKey = nd.getTextContent();
             }
           } else {
             if (nn.equals("totalCount")) // 전체 검색수
             {
-              n[0] = Integer.parseInt(nd.getTextContent());
+              result[0] = Integer.parseInt(nd.getTextContent());
             } else if (nn.equals("currentPage")) // 현재 페이지 번호
             {
-              n[1] = Integer.parseInt(nd.getTextContent());
+              result[1] = Integer.parseInt(nd.getTextContent());
             }
           }
         }
@@ -87,8 +87,8 @@ public class OpenApiController {
 
       if (bOk) {
         ns = doc.getElementsByTagName("newAddressListAreaCdSearchAll");
-        for (p = 0; p < ns.getLength(); p++) {
-          nd = ns.item(p).getFirstChild();
+        for (pageIndex = 0; pageIndex < ns.getLength(); pageIndex++) {
+          nd = ns.item(pageIndex).getFirstChild();
           String zipcode = nd.getTextContent();
           nd = nd.getNextSibling();
           String roadAddress = nd.getTextContent();
@@ -99,17 +99,17 @@ public class OpenApiController {
         }
       }
 
-      if (s == null) { // OK!
+      if (addrSearchKey == null) { // OK!
         if (pageAddresses.size() < 3)
-          s = "검색결과가 없습니다.";
+          addrSearchKey = "검색결과가 없습니다.";
       }
     } catch (Exception e) {
-      s = e.getMessage();
+      addrSearchKey = e.getMessage();
     }
 
     if (con != null)
       con.disconnect();
 
-    return s;
+    return addrSearchKey;
   }
 }
