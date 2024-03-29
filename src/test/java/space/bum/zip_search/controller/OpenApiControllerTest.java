@@ -5,14 +5,16 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import space.bum.zip_search.domain.FoundAddress;
+
 class OpenApiControllerTest {
 
   @Test
   void testFind() {
-    List<String> vector = new ArrayList<String>();
+    List<FoundAddress> pageAddresses = new ArrayList<FoundAddress>();
     int[] counts = new int[2];
-    var result = OpenApiController.find("미사강변동로", 1, 10, vector, counts);
-    System.out.println("결과: " + result);
+    OpenApiController.find("미사강변서로", 6, 10, pageAddresses, counts);
+    System.out.println("결과: " + pageAddresses);
   }
 
 }
