@@ -26,11 +26,13 @@ public class OpenApiController {
   // 반환값 : 에러메시지, null == OK
   public static String find(String s, int p, int l, List<String> v, int[] n) {
     HttpURLConnection con = null;
+    String auth_key = System.getenv("ZIP_SEARCH_APIKEY");
 
     try {
       URL url = new URL(
           "http://openapi.epost.go.kr/postal/retrieveNewAdressAreaCdSearchAllService/retrieveNewAdressAreaCdSearchAllService/getNewAddressListAreaCdSearchAll"
-              + "?ServiceKey=발급받은_인증키" // 서비스키
+              + "?ServiceKey="
+              + auth_key // 서비스키
               + "&countPerPage=" + l // 페이지당 출력될 개수를 지정(최대 50)
               + "&currentPage=" + p // 출력될 페이지 번호
               + "&srchwrd=" + URLEncoder.encode(s, "UTF-8") // 검색어
