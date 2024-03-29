@@ -19,15 +19,16 @@ import space.bum.zip_search.domain.SearchKey;
 public class ZipcodeService {
 
   public Page<FoundAddress> findPaginated(@Valid SearchKey searchKey,
-      Pageable pageable, int[] counts) {
+      Pageable pageable) {
     int pageSize = pageable.getPageSize();
     int currentPage = pageable.getPageNumber();
     List<FoundAddress> pageAddresses = new ArrayList<FoundAddress>();
+    int[] result = new int[2];
     
     ZipcodeUtil.find(searchKey.getAddrKey(), currentPage + 1, pageSize,
-        pageAddresses, counts);
+        pageAddresses, result);
     Page<FoundAddress> addressPage = new PageImpl<FoundAddress>(pageAddresses,
-        PageRequest.of(currentPage, pageSize), counts[0]);
+        PageRequest.of(currentPage, pageSize), result[0]);
 
     return addressPage;
   }
