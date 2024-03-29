@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import space.bum.zip_search.domain.FoundAddress;
 
-class OpenApiControllerTest {
+class ZipcodeUtilTest {
 
   @Test
   void testFind() {
     List<FoundAddress> pageAddresses = new ArrayList<FoundAddress>();
     int[] counts = new int[2];
-    OpenApiController.find("미사강변서로", 6, 10, pageAddresses, counts);
+    ZipcodeUtil.find("미사강변서로", 6, 10, pageAddresses, counts);
     System.out.println("결과: " + pageAddresses);
   }
 
