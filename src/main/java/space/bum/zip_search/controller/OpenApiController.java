@@ -12,6 +12,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import space.bum.zip_search.domain.FoundAddress;
+
 public class OpenApiController {
   // * 공공데이타포털(http://www.data.go.kr) 오픈 API 이용
 
@@ -24,7 +26,8 @@ public class OpenApiController {
   // [out] v[i*3 +0]=우편번호, v[i*3 +1]=도로명주소, v[i*3 +2]=지번주소, v.Count/3=표시할 목록 수
   // [out] n[0]=검색한 전체 목록(우편번호) 개수, n[1]=읽어온 페이지(1부터)
   // 반환값 : 에러메시지, null == OK
-  public static String find(String s, int p, int l, List<String> v, int[] n) {
+  public static String find(String s, int p, int l,
+      List<FoundAddress> pageAddresses, int[] n) {
     HttpURLConnection con = null;
     String auth_key = System.getenv("ZIP_SEARCH_APIKEY");
 
@@ -78,21 +81,20 @@ public class OpenApiController {
 
       if (bOk) {
         ns = doc.getElementsByTagName("newAddressListAreaCdSearchAll");
-        for (p = 0; p < ns.getLength(); p++)
-          for (nd = ns.item(p).getFirstChild(); nd != null; nd = nd
-              .getNextSibling()) {
-            // nn = nd.getNodeName();
-            // if (nn.equals("zipNo") || // 우편번호
-            // nn.equals("lnmAdres") || // 도로명 주소
-            // nn.equals("rnAdres")) // 지번 주소
-            // {
-            v.add(nd.getTextContent());
-            // }
-          }
+        for (p = 0; p < ns.getLength(); p++) {
+          nd = ns.item(p).getFirstChild();
+          String zipcode = nd.getTextContent();
+          nd = nd.getNextSibling();
+          String roadAddress = nd.getTextContent();
+          nd = nd.getNextSibling();
+          String zBunAddress = nd.getTextContent();
+          pageAddresses
+              .add(new FoundAddress(zipcode, roadAddress, zBunAddress));
+        }
       }
 
       if (s == null) { // OK!
-        if (v.size() < 3)
+        if (pageAddresses.size() < 3)
           s = "검색결과가 없습니다.";
       }
     } catch (Exception e) {
