@@ -11,7 +11,8 @@ class OpenApiControllerTest {
   void testFind() {
     List<String> vector = new ArrayList<String>();
     int[] counts = new int[2];
-    OpenApiController.find("미사강변동로", 1, 10, vector, counts);
+    var result = OpenApiController.find("미사강변동로", 1, 10, vector, counts);
+    System.out.println("결과: " + result);
   }
 
 }
