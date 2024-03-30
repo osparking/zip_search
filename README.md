@@ -6,3 +6,6 @@
 - 개발틀: Spring Boot(parent 3.2.4), Maven
 - 프론트: Thymeleaf 3, Bootstrap 5
 - 기타: devtools, lombok
+
+<h4>다음은 개발 상세단계 설명 파일입니다.</h4>
+https://github.com/osparking/zip_search/blob/main/src/main/resources/static/Korea-Public-API-ZipCode-Address-Search-Java-Web.pdf
