@@ -23,7 +23,7 @@
 		</div>
 		<form class="form-horizontal mb-4" th:object="${searchKey}"
 			th:action="@{/searchAddress}" method="get">
-			<div class="row form-group">
+			<div class="row form-group w-50" style='min-width: 200px;'>
 				<div class="col-8">
 					<input type="text" class="form-control" placeholder="주소 검색어"
 						th:field="*{addrKey}" />
@@ -31,7 +31,7 @@
 						th:if="${#fields.hasErrors('addrKey')}" th:errors="*{addrKey}">
 					</div>
 				</div>
-				<div class="col-3">
+				<div class="col">
 					<button type="submit" class="btn btn-primary">검색</button>
 				</div>
 			</div>
@@ -42,51 +42,54 @@
 				<span
 					th:text="${addressPage eq null} ? '- )' : 
 					${addressPage.totalElements} + ')'">
-					(검색건수)</span>
+					검색건수)</span>
 			</caption>
 			<thead>
 				<tr>
 					<th>우편번호</th>
-					<th>주소(도로명/지번)</th>
+					<th>도로명 주소 / <span class="fw-normal">지번 주소</span></th>
 				</tr>
 			</thead>
 			<tbody th:if="${addressPage != null}">
 				<tr th:each="address,iStat: ${addressPage.content}"
-					th:if="${addressPage != null}">
+					th:if="${addressPage != null}" class="align-middle">
 					<td th:text="${address.zipcode}">(우편번호)</td>
-					<td th:text="${address.roadAddress}">(도로명/지번-주소)</td>
+					<td>
+						<p th:text="${address.roadAddress}" class="mb-0 fw-bold">(도로 주소)</p>
+						<p th:text="${address.zBunAddress}" class="mb-0">(지번 주소)</p>
+					</td>
 				</tr>
-				<tr th:remove="all">
+				<tr th:remove="all" class="align-middle">
 					<td>(우편번호)</td>
-					<td>(도로명/지번-주소)</td>
-				</tr>
-				<tr th:remove="all">
-					<td>(우편번호)</td>
-					<td>(도로명/지번-주소)</td>
-				</tr>
+					<td>
+						<p class="mb-0">(도로 주소)</p>
+						<p class="mb-0">(지번 주소)</p>
+					</td>
+				</tr>				
 			</tbody>
 		</table>
 		<ul th:if="${addressPage != null && addressPage.totalPages > 0}"
 			class="pagination">
 			<li class="page-item"
-				th:classappend="${currentPage == 1} ? 'disabled'">
-				<a th:replace="~{fragments/paging :: paging(${searchKey.addrKey},
+				th:classappend="${currentPage == 1} ? 'disabled'"><a
+					th:replace="~{fragments/paging :: paging(${searchKey.addrKey},
            ${addressPage.size}, 1, '<<', '첫 페이지')}"></a>
 			</li>
 			<li class="page-item font-weight-bold"
-				th:classappend="${currentPage == 1} ? 'disabled'">
-				<a th:replace="~{fragments/paging :: paging(${searchKey.addrKey}, 
+				th:classappend="${currentPage == 1} ? 'disabled'"><a
+					th:replace="~{fragments/paging :: paging(${searchKey.addrKey}, 
 				   ${addressPage.size}, ${currentPage - 1}, '직전', '직전 페이지')}"></a>
 			</li>
-			<li class="page-item disabled" th:if="${currentPage - 2 > 1}">
-			  <a class="page-link" href="#">...</a></li>
+			<li class="page-item disabled" th:if="${currentPage - 2 > 1}"><a
+					class="page-link" href="#">...</a></li>
 			<li class="page-item"
 				th:classappend="${pageNumber == currentPage} ? 'active'"
 				th:each="pageNumber : ${#numbers.sequence(
           currentPage > 2 ? currentPage - 2 : 1, 
           (currentPage > 2 ? currentPage - 2 : 1) + 4 > totalPages ?
           totalPages : (currentPage > 2 ? currentPage - 2 : 1) + 4)}">
-				<a th:replace="~{fragments/paging :: paging(${searchKey.addrKey},
+				<a
+					th:replace="~{fragments/paging :: paging(${searchKey.addrKey},
 				  ${addressPage.size}, ${pageNumber}, ${pageNumber}, 
 				  ${pageNumber} + '페이지')}"></a>
 			</li>
@@ -94,13 +97,13 @@
 				th:if="${currentPage + 2 < totalPages}"><a class="page-link"
 					href="#">...</a></li>
 			<li class="page-item font-weight-bold"
-				th:classappend="${currentPage == totalPages} ? 'disabled'">
-				<a th:replace="~{fragments/paging :: paging(${searchKey.addrKey},
+				th:classappend="${currentPage == totalPages} ? 'disabled'"><a
+					th:replace="~{fragments/paging :: paging(${searchKey.addrKey},
 					 ${addressPage.size}, ${currentPage + 1}, '다음', '다음 페이지')}"></a>
 			</li>
 			<li class="page-item"
-				th:classappend="${currentPage == totalPages} ? 'disabled'">
-				<a th:replace="~{fragments/paging :: paging(${searchKey.addrKey},
+				th:classappend="${currentPage == totalPages} ? 'disabled'"><a
+					th:replace="~{fragments/paging :: paging(${searchKey.addrKey},
            ${addressPage.size}, ${totalPages}, '>>', '끝 페이지')}"></a>
 			</li>
 		</ul>
