@@ -7,5 +7,7 @@
 - 프론트: Thymeleaf 3, Bootstrap 5
 - 기타: devtools, lombok
 
+실행후 접근할 주소 : http://localhost:8080/searchAddress
+
 <h4>다음은 개발 상세단계 설명 파일입니다.</h4>
 https://github.com/osparking/zip_search/blob/main/src/main/resources/static/Korea-Public-API-ZipCode-Address-Search-Java-Web.pdf
